@@ -4,6 +4,8 @@ subtitle: 'Continuous Measures'
 output: html_document
 ---
 
+This manual was created by Catherine D’Este and updated by Tambri Housen and Alice Richardson. The manual was originally created for use with Stata data analysis software, the conversion to R was conducted by Nidhi Menon and Arminder Deol. The manual was created for the [Australian Field Epidemiology Training Program – Masters of Philosophy (Applied Epidemiology)](https://rsph.anu.edu.au/study/master-degrees/master-philosophy-applied-epidemiology), Australian National University. CRICOS Provider No. 00120C
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -38,9 +40,9 @@ if (!require(MASS)) {
 
 **A. Statistical Analysis Plan**
 
-Descriptive statistics will be presented as mean and standard deviations for continuous Exploratory data analysis will involve obtaining correlation coefficients for continuous explanatory variables (Pearson correlation if variables are approximately normally distributed or the non-parametric Spearman correlation coefficient if either of the variables are not normally distributed), ttests for binary explanatory variables (or a non-parametric equivalent such as the Mann Whitney test if the outcome is not normally distributed) and ANOVA for categorical variables or the non-parametric Kruskal-Wallis test). 
+Descriptive statistics will be presented as mean and standard deviations for continuous variables. Exploratory data analysis will involve obtaining correlation coefficients for pairs of continuous explanatory variables (Pearson correlation if variables are approximately normally distributed or the non-parametric Spearman correlation coefficient if either of the variables are not normally distributed), ttests for the relationship between the continuous outcome and binary explanatory variables (or a non-parametric equivalent such as the Mann Whitney test if the outcome is not normally distributed) and ANOVA for the relationship between the continuous outcome and categorical variables (or the non-parametric Kruskal-Wallis test). 
 
-To adjust for potential confounders, in addition to blood lead level ion 1972, age, sex, area of residence and whether or not the child lived within 1 mile of the smelter for the first two years of their life will then be included in a multiple linear regression model. Because blood lead level in 1973 was obtained at a later time to the other variables, this measure was not considered appropriate for inclusion in the model. It is also likely to be highly correlated with blood lead level in 1972. Finger wrist tapping score was also not considered as an explanatory variable as this is a neurological measure, and clinically / biologically not meaningful to include in this model. 
+To adjust for potential confounders, in addition to blood lead level in 1972, age, sex, area of residence and whether or not the child lived within 1 mile of the smelter for the first two years of their life will then be included in a multiple linear regression model. Because blood lead level in 1973 was obtained at a later time to the other variables, this measure was not considered appropriate for inclusion in the model. It is also likely to be highly correlated with blood lead level in 1972. Finger wrist tapping score was also not considered as an explanatory variable as this is a neurological measure, and clinically / biologically not meaningful to include in this model. 
 
 Regression diagnostics were undertaken for the final model to assess the appropriateness of the assumptions and the fit of the model. Point estimates, 95% confidence intervals and significance tests are reported for coefficient estimates. A significance level of 5% was used for all analyses.
 
@@ -68,34 +70,31 @@ prop.table(t2)
 t3 <- table(fst2yrs); print(t3)
 prop.table(t3)
 
-# Draw a histogram of age
-hist(age)
+# Draw a histogram of age - simple method:
+hist(age, prob=TRUE, breaks=10) # showing density instead of frequencies and split into 10 age bins rather than defaults
 
-# Add a Normal Curve 
-x <- age
-h<-hist(x, xlab="Age in Years", breaks = 10, main="Histogram with Normal Curve") # prob = T for density
+lines(density(age)) #to plot density curve
 
-#lines(density(age)) to plot density curve
+# Add a Normal Curve instead - assign the histogram to 'h'
 
-xfit<-seq(min(x),max(x),length=40) 
-yfit<-dnorm(xfit,mean=mean(x),sd=sd(x)) 
-yfit <- yfit*diff(h$mids[1:2])*length(x) 
+h<-hist(age, xlab="Age in Years", breaks = 10, main="Histogram with Normal Curve") # prob = T for density
+
+xfit<-seq(min(age),max(age),length=40) 
+yfit<-dnorm(xfit,mean=mean(age),sd=sd(age)) 
+yfit <- yfit*diff(h$mids[1:2])*length(age) 
 lines(xfit, yfit, col="blue", lwd=2)
 
 # Omit any missing values
 x1 <- na.omit(lead72)
 h<-hist(x1, xlab="Blood lead level in 1972", breaks = 10, main="Histogram with Normal Curve")# for density
 
-#lines(density(age)) #to plot density curve
-
 xfit<-seq(min(x1),max(x1)) 
 yfit<-dnorm(xfit,mean=mean(x1),sd=sd(x1)) 
 yfit <- yfit*diff(h$mids[1:2])*length(x1) 
 lines(xfit, yfit, col="blue", lwd=2)
 
-x1 <- na.omit(lead73)
+x1 <- na.omit(lead73) # Omits missing values 
 h<-hist(x1, xlab="Blood lead level in 1973", breaks = 10, main="Histogram with Normal Curve")# for density
-#lines(density(age)) #to plot density curve
 
 xfit<-seq(min(x1),max(x1)) 
 yfit<-dnorm(xfit,mean=mean(x1),sd=sd(x1)) 
@@ -104,7 +103,6 @@ lines(xfit, yfit, col="blue", lwd=2)
 
 x1 <- na.omit(fwttest)
 h<-hist(x1, xlab="fwttest", breaks = 10, main="Histogram with Normal Curve")# for density
-#lines(density(age)) #to plot density curve
 
 xfit<-seq(min(x1),max(x1)) 
 yfit<-dnorm(xfit,mean=mean(x1),sd=sd(x1)) 
@@ -113,7 +111,6 @@ lines(xfit, yfit, col="blue", lwd=2)
 
 x1 <- na.omit(iq)
 h<-hist(x1, xlab="IQ", breaks = 10, main="Histogram with Normal Curve")# for density
-#lines(density(age)) #to plot density curve
 
 xfit<-seq(min(x1),max(x1)) 
 yfit<-dnorm(xfit,mean=mean(x1),sd=sd(x1)) 
@@ -121,7 +118,7 @@ yfit <- yfit*diff(h$mids[1:2])*length(x1)
 lines(xfit, yfit, col="blue", lwd=2)
 ```
 
-Exploratory analysis involves investigating the relationship between each explanatory variable of interest and the outcome (iq). It does not make sense to consider blood lead levels in 72 and 73, as these variables are expected to be highly correlated (the correlation coefficient or 0.68 confirms this), so we are only using lead72. It also does not make sense to include finger wrist tapping score as an explanatory variable when investigating the relationship between iq and blood lead level, so this variables has not been considered in the analyses. There is also likely to be a relationship between area of residence (whether the child lives within 1 mile of the smelter) and whether or not the child lived within 1 mile of the smelter for the first two years of their life; we would need to consider how to deal with this (considering only of these variables, examining potential interaction / effect modification); but for this example we have include both variables in the model.
+Exploratory analysis involves investigating the relationship between each explanatory variable of interest and the outcome (iq). It does not make sense to consider blood lead levels in 72 and 73 in a model of IQ, as these variables are expected to be highly correlated (the correlation coefficient or 0.68 confirms this), so we are only using lead72. It also does not make sense to include finger wrist tapping score as an explanatory variable when investigating the relationship between IQ and blood lead level, so this variables has not been considered in the analyses. There is also likely to be a relationship between area of residence (whether the child lives within 1 mile of the smelter) and whether or not the child lived within 1 mile of the smelter for the first two years of their life; we would need to consider how to deal with this (considering only of these variables, examining potential interaction / effect modification); but for this example we have include both variables in the model.
 
 ```{r}
 #First install the Hmisc package in R before this step
@@ -156,30 +153,33 @@ abline(h = 0, col = "red", lwd = 2)
 The scatter plots and correlation coefficients demonstrate a slight decrease in IQ with increasing blood lead level, but no relationship between IQ and age (this seems logical). 
 
 The `t.test( )` function produces a variety of t-tests. Unlike most statistical packages, the default assumes unequal variance and applies the Welsh df modification. You can use the `var.equal = TRUE` option to specify equal variances and a pooled variance estimate. You can use the `alternative="less"` or `alternative="greater"` option to specify a one tailed test.
-The results of the t tests do not indicate a relationship between IQ and sex, area of residence and whether the child lived within 1 mile of the smelter for the first two years.
+
+The results of the t tests do not indicate a relationship between IQ and sex, area of residence and whether the child lived within 1 mile of the smelter for the first two years (output not shown).
 
 
 **C. Multiple regression model:**
 
 
 
-***c.1 specify the model***
+***c.1 Specify the model***
 
 We will generate a multiple linear regression model, with IQ as the outcome (dependent variable) and blood lead level in 1972, age, sex, area of residence and whether or not the child lived within 1 mile of the smelter for the first two years of their life as explanatory (independent) variables.
 
 
-***c.2 estimate / generate the model***
+***c.2 Estimate / generate the model***
 
 ```{r}
 area<-as.factor(area)
 mlr<-lm(iq~lead72+age+sex+area+fst2yrs)
 summary(mlr)
 
+# To obtain the 95% confidence intervals: 
+confint(mlr)
 ```
 
 
 
-***c.3 model checking – residual and model diagnostics***
+***c.3 Model checking – residual and model diagnostics***
 
 `plot(mlr)` provides diagnostic plots such as residual v/s fitted plot, QQ plots and fitted v/s standardized residual plot. 
 
@@ -187,7 +187,7 @@ summary(mlr)
 plot(mlr)
 ```
 
-To plot density curve for residuals,install the `MASS` package.
+To plot density curve for residuals, install the `MASS` package and enter the below code:
 
 ```{r}
 # Install the MASS package before this step
@@ -211,9 +211,9 @@ The histograms show that the errors (residuals) are approximately normally distr
 The adjusted R squared values is 0.0096. The model explains about 1% of the variability in IQ – this is not a good model!!!!!
 
 
-***c.4 inference and interpretation***
+***c.4 Inference and interpretation***
 
-IQ does not seem to be associated with blood lead level. While IQ does decrease slightly with increasing blood lead level, this is not statistically significant. The 95% CI for the coefficient estimate includes 0 and the P value for the test that the coefficient is 0 is < 0.05 (t = -1.35, p = 0.18).
+IQ does not seem to be associated with blood lead level. While IQ does decrease slightly with increasing blood lead level, this is not statistically significant. The 95% CI for the coefficient estimate includes 0 and the P value for the test that the coefficient is 0 is < 0.05 (t = -1.58, p = 0.12).
 
 The only variable which appears to be statistically significantly associated with IQ is area. Adjusting for blood lead level, age, sex and whether or not the child lived within 1 mile of the smelter for the first two years of their life, children who live more than a mile from the smelter have on average 6 units higher IQ (95% CI 0.2, 11.8). We are 95% sure that the true (population) IQ lies between 0.2 and 11.8 units higher for children living more than one mile from the lead smelter. Since this interval does not include 0, we conclude that IQ is statistically significantly higher for children living more than one mile from the smelter, relative to those living within one mile of the smelter. The value of the t test statistics for the null hypothesis that the coefficient for area is 0, is 2.05, with a p value of 0.043. We conclude that IQ is statistically significantly associated with area, consistent with our interpretation of the confidence interval.
 
