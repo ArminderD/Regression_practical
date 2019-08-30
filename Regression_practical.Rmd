@@ -4,7 +4,7 @@ subtitle: 'Continuous Measures'
 output: html_document
 ---
 
-This manual was created by Catherine D’Este and updated by Tambri Housen and Alice Richardson. The manual was originally created for use with Stata data analysis software, the conversion to R was conducted by Nidhi Menon and Arminder Deol. The manual was created for the [Australian Field Epidemiology Training Program – Masters of Philosophy (Applied Epidemiology)](https://rsph.anu.edu.au/study/master-degrees/master-philosophy-applied-epidemiology), Australian National University. CRICOS Provider No. 00120C
+This manual was created by Catherine D'Este and updated by Tambri Housen and Alice Richardson. The manual was originally created for use with Stata data analysis software, the conversion to R was conducted by Nidhi Menon and Arminder Deol. The manual was created for the [Australian Field Epidemiology Training Program - Masters of Philosophy (Applied Epidemiology)](https://rsph.anu.edu.au/study/master-degrees/master-philosophy-applied-epidemiology), Australian National University. CRICOS Provider No. 00120C
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -35,7 +35,7 @@ if (!require(MASS)) {
 * C. Modelling
   + c.1 specify the model
   + c.2 estimate / generate the model
-  + c.3 model checking – residual and model diagnostics
+  + c.3 model checking - residual and model diagnostics
   + c.4 inference and interpretation
 
 **A. Statistical Analysis Plan**
